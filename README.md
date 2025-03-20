@@ -37,7 +37,7 @@ Follow these simple steps to get a local copy up and running:
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/your-username/react-tic-tac-toe.git
+   git clone https://github.com/jjteoh-thewebdev/react-tic-tac-toe.git
    ```
 
 2. Navigate to the project directory
@@ -48,15 +48,11 @@ Follow these simple steps to get a local copy up and running:
 3. Install dependencies
    ```sh
    npm install
-   # or
-   yarn
    ```
 
 4. Start the development server
    ```sh
    npm run dev
-   # or
-   yarn dev
    ```
 
 5. Open your browser and navigate to `http://localhost:5173`
@@ -67,8 +63,6 @@ To create a production build:
 
 ```sh
 npm run build
-# or
-yarn build
 ```
 
 The build artifacts will be located in the `dist/` directory.
@@ -79,6 +73,6 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 
 ## Contact
 
-Your Name - [your.email@example.com](mailto:your.email@example.com)
+Your Name - [thewebdev.jjteoh@gmail.com](mailto:thewebdev.jjteoh@gmail.com)
 
-Project Link: [https://github.com/your-username/react-tic-tac-toe](https://github.com/your-username/react-tic-tac-toe)
+Project Link: [https://github.com/jjteoh-thewebdev/react-tic-tac-toe](https://github.com/jjteoh-thewebdev/react-tic-tac-toe)
