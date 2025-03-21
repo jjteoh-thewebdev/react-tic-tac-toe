@@ -2,6 +2,8 @@
 
 Tic-Tac-Toe game built with React + TypeScript + Vite.
 
+Read project walkthrough on: [Substack](https://itsjjteoh.substack.com/p/building-a-tic-tac-toe-game-with)
+
 ## Preview
 
 ![Tic Tac Toe Gameplay](tic-tac-toe.gif)
@@ -16,6 +18,8 @@ This is a fully-functional Tic Tac Toe game with the following features:
 
 
 The AI in Hard mode uses the Minimax algorithm with Alpha-Beta pruning to make optimal moves, making it almost unbeatable!
+
+Read project walkthrough on: [Substack](https://itsjjteoh.substack.com/p/building-a-tic-tac-toe-game-with)
 
 ## Built With
 
