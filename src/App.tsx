@@ -6,12 +6,10 @@ import SymbolSelection from "./components/SymbolSelection"
 import GameBoard from "./components/GameBoard"
 import EndGameDialog from "./components/EndGameDialog"
 import { GameModeType, PlayerSymbol, Board, GameStatus, AIMode } from "./types/types"
-
-const winningLines = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-  [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-  [0, 4, 8], [2, 4, 6]  // Diagonals
-];
+import { checkWinner, checkDraw } from "./utils/winningChecker"
+import { makeEasyAIMove } from "./utils/aiEasy"
+import { makeMediumAIMove } from "./utils/aiMedium"
+import { makeHardAIMove } from "./utils/aiHard"
 
 export default function App() {
   const [gameMode, setGameMode] = useState<GameModeType>(null)
@@ -25,38 +23,23 @@ export default function App() {
   // Add effect to handle AI move when game status changes to playing
   useEffect(() => {
     if (gameMode === "single" && playerTurn !== playerSymbol && gameStatus === "playing") {
-        makeAIMove()
+        setTimeout(() => {
+          makeAIMove()
+        }, 500) // delay to make it look like real player playing
     }
   }, [gameStatus, gameMode, playerSymbol, playerTurn])
 
-  const resetGame = () => {
+  const resetGame = (status: GameStatus = "playing") => {
     setBoard(Array(9).fill(null))
     setPlayerTurn("X")
-    setGameStatus("playing")
+    setGameStatus(status)
     setWinner(null)
   }
 
   const resetToHome = () => {
-    setBoard(Array(9).fill(null))
-    setGameStatus("initial")
-    setPlayerTurn("X")
-    setWinner(null)
+    resetGame("initial")
     setAiMode("easy")
     setGameMode(null)
-  }
-
-  const checkWinner = (board: Board): PlayerSymbol | null => {
-    for (let i = 0; i < winningLines.length; i++) {
-      const [a, b, c] = winningLines[i]
-      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        return board[a] as PlayerSymbol
-      }
-    }
-    return null
-  }
-
-  const checkDraw = (board: Board): boolean => {
-    return board.every((square) => square !== null)
   }
 
   const handleMove = (index: number) => {
@@ -86,155 +69,18 @@ export default function App() {
     }
 
     const nextPlayer = playerTurn === "X" ? "O" : "X"
-    console.log(`nextPlayer`, nextPlayer)
     setPlayerTurn(nextPlayer)
-
-    // AI move for single player mode
-    // if (gameMode === "single" && nextPlayer !== playerSymbol) {
-    //   setTimeout(() => {
-    //     makeAIMove()
-    //   }, 5000)
-    // }
   }
-
-  const makeEasyAIMove = (): number => {
-    // Simple AI: find first empty square
-    const emptyCells = board.map((cell, index) => (cell === null ? index : -1)).filter((index) => index !== -1)
-
-    if (emptyCells.length === 0) throw new Error("No empty cells")
-
-    // Choose a random empty cell
-    const randomIndex = Math.floor(Math.random() * emptyCells.length)
-
-    return emptyCells[randomIndex]
-  }
-
-  const getPossibleWinningMove = (player: PlayerSymbol): number | null => {
-    for (let [a, b, c] of winningLines) {
-      const values = [board[a], board[b], board[c]];
-    if (values.filter(v => v === player).length === 2 && values.includes(null)) {
-      return [a, b, c].find(index => board[index] === null) || null;
-    }
-    }
-    return null;
-  };
-
-  const makeMediumAIMove = (): number => {
-      const availableMoves = board.map((cell, index) => (cell === null ? index : -1)).filter(index => index !== -1);
-    
-      // 1. AI wins in one move
-      const winningMove = getPossibleWinningMove(playerTurn);
-      if (winningMove !== null) return winningMove;
-    
-      // 2. Block opponent from winning
-      const blockingMove = getPossibleWinningMove(playerSymbol);
-      if (blockingMove !== null) return blockingMove;
-    
-      // 3. Play center if available
-      if (board[4] === null) return 4;
-    
-      // 4. Play a corner if available
-      const corners = [0, 2, 6, 8].filter(index => availableMoves.includes(index));
-      if (corners.length > 0) return corners[Math.floor(Math.random() * corners.length)];
-    
-      // 5. Play a random edge if available
-      const edges = [1, 3, 5, 7].filter(index => availableMoves.includes(index));
-      return edges.length > 0 ? edges[Math.floor(Math.random() * edges.length)] : availableMoves[0];
-  }
-
-  // Minimax Algorithm with Alpha-Beta Pruning
-  const minimax = (board: Board, depth: number, isMaximizing: boolean, aiPlayer: PlayerSymbol, humanPlayer: PlayerSymbol, alpha: number, beta: number): number => {
-    const winner = checkWinner(board);
-    if (winner === aiPlayer) return 10 - depth; // AI wins
-    if (winner === humanPlayer) return depth - 10; // Human wins
-    if (checkDraw(board)) return 0; // Draw
-
-    if (isMaximizing) {
-      let bestScore = -Infinity;
-      for (let i = 0; i < board.length; i++) {
-        if (!board[i]) {
-          board[i] = aiPlayer;
-          let score = minimax(board, depth + 1, false, aiPlayer, humanPlayer, alpha, beta);
-          board[i] = null; // Undo move
-          bestScore = Math.max(bestScore, score);
-          alpha = Math.max(alpha, bestScore);
-          if (beta <= alpha) break; // Prune
-        }
-      }
-      return bestScore;
-    } else {
-      let bestScore = Infinity;
-      for (let i = 0; i < board.length; i++) {
-        if (!board[i]) {
-          board[i] = humanPlayer;
-          let score = minimax(board, depth + 1, true, aiPlayer, humanPlayer, alpha, beta);
-          board[i] = null; // Undo move
-          bestScore = Math.min(bestScore, score);
-          beta = Math.min(beta, bestScore);
-          if (beta <= alpha) break; // Prune
-        }
-      }
-      return bestScore;
-    }
-  };
-
-  // Find the best move using Minimax
-  const makeHardAIMove = (): number => {
-    let bestMove = -1;
-    let bestScore = -Infinity;
-
-    const humanPlayer = playerSymbol;
-    const aiPlayer = playerSymbol === "X" ? "O" : "X";
-
-    // First, check if we can win in one move
-    for (let i = 0; i < board.length; i++) {
-      if (!board[i]) {
-        board[i] = aiPlayer;
-        if (checkWinner(board) === aiPlayer) {
-          board[i] = null;
-          return i;
-        }
-        board[i] = null;
-      }
-    }
-
-    // Then, check if we need to block opponent's winning move
-    for (let i = 0; i < board.length; i++) {
-      if (!board[i]) {
-        board[i] = humanPlayer;
-        if (checkWinner(board) === humanPlayer) {
-          board[i] = null;
-          return i;
-        }
-        board[i] = null;
-      }
-    }
-
-    // If no immediate win or block, use minimax to find the best move
-    for (let i = 0; i < board.length; i++) {
-      if (!board[i]) {
-        board[i] = aiPlayer;
-        let score = minimax(board, 0, false, aiPlayer, humanPlayer, -Infinity, Infinity);
-        board[i] = null;
-
-        if (score > bestScore) {
-          bestScore = score;
-          bestMove = i;
-        }
-      }
-    }
-    return bestMove;
-  };
 
   const makeAIMove = () => {
     let aiMoveIndex = 0
 
-    if(aiMode === "easy") {
-      aiMoveIndex = makeEasyAIMove()
+    if (aiMode === "easy") {
+      aiMoveIndex = makeEasyAIMove(board)
     } else if (aiMode === "medium") {
-      aiMoveIndex = makeMediumAIMove()
+      aiMoveIndex = makeMediumAIMove(board, playerTurn, playerSymbol)
     } else {
-      aiMoveIndex = makeHardAIMove()
+      aiMoveIndex = makeHardAIMove(board, playerSymbol)
     }
 
     handleMove(aiMoveIndex)
@@ -258,7 +104,7 @@ export default function App() {
       }} />
     }
 
-    return <GameBoard board={board} playerTurn={playerTurn} playerMode={gameMode} playerSymbol={playerSymbol} onMove={handleMove} />
+    return <GameBoard board={board} playerTurn={playerTurn} gameMode={gameMode} playerSymbol={playerSymbol} onMove={handleMove} />
   }
 
   return (

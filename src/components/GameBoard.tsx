@@ -5,20 +5,12 @@ import { Board, GameModeType, PlayerSymbol } from "../types/types"
 interface GameBoardProps {
   board: Board
   playerTurn: PlayerSymbol
-  playerMode: GameModeType
+  gameMode: GameModeType
   playerSymbol: PlayerSymbol
   onMove: (index: number) => void
 }
 
-export default function GameBoard({ board, playerTurn: currentPlayer, playerMode, playerSymbol, onMove }: GameBoardProps) {
-
-  const onMoveHandler = (index: number) => {
-    if(playerMode === "single" && currentPlayer !== playerSymbol) {
-      return
-    }
-
-    onMove(index)
-  }
+export default function GameBoard({ board, playerTurn: currentPlayer, gameMode, playerSymbol, onMove }: GameBoardProps) {
 
   return (
     <div className="flex flex-col items-center">
@@ -34,8 +26,8 @@ export default function GameBoard({ board, playerTurn: currentPlayer, playerMode
           <button
             key={index}
             className="w-24 h-24 flex items-center justify-center text-4xl font-bold bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
-            onClick={() => onMoveHandler(index)}
-            disabled={cell !== null}
+            onClick={() => onMove(index)}
+            disabled={cell !== null || (gameMode === "single" && currentPlayer !== playerSymbol)}
           >
             {cell && <span className={cell === "X" ? "text-green-600" : "text-blue-600"}>{cell}</span>}
           </button>

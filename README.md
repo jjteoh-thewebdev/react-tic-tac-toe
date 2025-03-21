@@ -24,6 +24,32 @@ The AI in Hard mode uses the Minimax algorithm with Alpha-Beta pruning to make o
 - [Vite](https://vitejs.dev/) - Build tool and development server
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 
+## Folder Structure
+
+The project is organized into the following folder structure to ensure clarity and maintainability:
+
+```
+react-tic-tac-toe/
+├── src/
+│   ├── components/       # Reusable React components (e.g., Board, Square)
+│   ├── types/            # common types shared across components
+│   ├── utils/            # Utility functions (e.g., checkWinner, minimax)
+│   ├── App.tsx           # Main application component
+│   ├── main.tsx         # Entry point of the application
+├── public/               # Static assets (e.g., favicon, index.html)
+├── eslint.config.js      # linting rules
+├── index.html            # index file
+├── package.json          # Project dependencies and scripts
+├── tsconfig.json         # TypeScript configuration
+└── vite.config.ts        # Vite configuration
+```
+
+### Key Folders
+
+- **`components/`**: Contains all the React components used in the application. Each component is modular and focuses on a specific part of the UI.
+- **`types/`**: Contains common types that shared across components.
+- **`utils/`**: Houses utility functions for game logic, such as checking for a winner and implementing AI.
+
 ## Getting Started
 
 Follow these simple steps to get a local copy up and running:
