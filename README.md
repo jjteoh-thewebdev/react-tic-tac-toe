@@ -109,6 +109,6 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 
 ## Contact
 
-Your Name - [thewebdev.jjteoh@gmail.com](mailto:thewebdev.jjteoh@gmail.com)
+Creator - [thewebdev.jjteoh@gmail.com](mailto:thewebdev.jjteoh@gmail.com)
 
 Project Link: [https://github.com/jjteoh-thewebdev/react-tic-tac-toe](https://github.com/jjteoh-thewebdev/react-tic-tac-toe)
