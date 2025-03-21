@@ -8,6 +8,12 @@ Read project walkthrough on: [Substack](https://itsjjteoh.substack.com/p/buildin
 
 ![Tic Tac Toe Gameplay](tic-tac-toe.gif)
 
+<div align="center">
+
+### [Browse Live App](https://react-tic-tac-toe-gamma-rosy.vercel.app/)
+
+</div>
+
 
 ## About The Project
 
